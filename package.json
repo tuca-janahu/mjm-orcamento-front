@@ -1,38 +1,52 @@
 {
   "name": "mjm-orcamento",
   "private": true,
-  "type": "module",
   "version": "0.1.0",
+  "type": "module",
   "packageManager": "pnpm@10.13.1",
   "engines": {
     "node": ">=22"
   },
   "scripts": {
-    "dev": "pnpm --filter @mjm/shared build && pnpm --parallel --filter @mjm/api --filter @mjm/web dev",
-    "dev:web": "pnpm --filter @mjm/shared build && pnpm --filter @mjm/web dev",
-    "dev:api": "pnpm --filter @mjm/shared build && pnpm --filter @mjm/api dev",
-    "build": "pnpm -r --if-present build",
-    "test": "pnpm -r --if-present test",
-    "lint": "pnpm -r --if-present lint",
-    "typecheck": "pnpm -r --if-present typecheck",
-    "db:generate": "pnpm --filter @mjm/api db:generate",
-    "db:migrate": "pnpm --filter @mjm/api db:migrate",
-    "db:migrate:deploy": "pnpm --filter @mjm/api db:migrate:deploy",
-    "db:seed": "pnpm --filter @mjm/api db:seed"
+    "contracts:build": "pnpm --dir ../mjm-orcamento-back/packages/shared build",
+    "dev": "pnpm run contracts:build && vite",
+    "build": "pnpm run contracts:build && tsc -b && vite build",
+    "lint": "eslint src",
+    "test": "pnpm run contracts:build && vitest run",
+    "typecheck": "pnpm run contracts:build && tsc -b --noEmit"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.1.1",
+    "@mjm/contracts": "link:../mjm-orcamento-back/packages/shared",
+    "axios": "^1.10.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-hook-form": "^7.60.0",
+    "react-router": "^7.7.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^24.0.15",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
     "eslint": "^9.31.0",
     "globals": "^16.3.0",
-    "typescript-eslint": "^8.38.0"
+    "jsdom": "^29.1.1",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.38.0",
+    "vite": "^7.0.5",
+    "vitest": "^3.2.7"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "@prisma/client",
-      "@prisma/engines",
-      "argon2",
-      "esbuild",
-      "prisma"
+      "esbuild"
     ]
   }
 }

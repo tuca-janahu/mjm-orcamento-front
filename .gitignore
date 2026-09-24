@@ -9,5 +9,3 @@ coverage/
 .DS_Store
 .idea/
 .vscode/
-apps/api/prisma/*.db
-apps/api/prisma/*.db-journal

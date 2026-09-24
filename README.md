@@ -1,214 +1,54 @@
-# MJM Orcamentos
+# MJM Orcamentos — Frontend
 
-Aplicacao web interna para criacao e gerenciamento de orcamentos de servicos de software.
+Aplicacao web do sistema de orcamentos da MJM, construida com React, TypeScript e Vite.
 
-O produto e organizado como um monorepo pnpm. O frontend e o backend continuam sendo aplicacoes independentes, e o backend e a fonte de verdade das regras de negocio e dos calculos financeiros.
+## Requisitos
 
-## Estado atual
+- Node.js 22 ou superior
+- pnpm 10.13.1
+- API `mjm-orcamento-back` em execucao
 
-O estado atual contempla:
+## Configuracao
 
-- estrutura inicial do monorepo;
-- API Express com TypeScript;
-- PostgreSQL e Prisma;
-- entidade `User`;
-- autenticacao com JWT em cookie HttpOnly;
-- seed de um administrador;
-- rotas `POST /auth/login`, `POST /auth/logout` e `GET /auth/me`;
-- frontend com login, painel, projetos e fluxos de orcamento WEBSITE, PLATAFORMA_WEB e SISTEMA_INTERNO;
-- testes automatizados da autenticacao;
-- documentacao OpenAPI das rotas implementadas.
-- CRUD backend de projetos;
-- configuracoes de preco WEBSITE, PLATAFORMA_WEB e SISTEMA_INTERNO no banco;
-- motores de precificacao WEBSITE, PLATAFORMA_WEB e SISTEMA_INTERNO independentes de Express;
-- orcamentos `Budget` versionados com itens `BudgetItem` congelados;
-- recalculo explicito e finalizacao controlada para rascunhos;
-- exclusao explicita de projetos sem orcamentos e de orcamentos ainda em rascunho;
-- testes unitarios e integrados do fluxo financeiro.
+```bash
+pnpm install
+cp .env.example .env
+pnpm dev
+```
 
-O frontend permite criar e acompanhar projetos, criar novas versoes de orcamento, salvar e recalcular rascunhos, visualizar itens e finalizar o orcamento mediante confirmacao. Exclusoes tambem exigem confirmacao explicita na interface. A precificacao automatica atende projetos `WEBSITE`, `PLATAFORMA_WEB` e `SISTEMA_INTERNO`. Os demais tipos, incluindo `ECOMMERCE`, continuam sem calculo automatico.
+Por padrao, o frontend abre em `http://localhost:5173` e consome a API em
+`http://localhost:3001`. Altere `VITE_API_URL` no `.env` quando necessario.
+
+## Comandos
+
+- `pnpm dev`: inicia o servidor de desenvolvimento.
+- `pnpm build`: gera a aplicacao de producao em `dist/`.
+- `pnpm test`: executa os testes do frontend e dos contratos compartilhados.
+- `pnpm lint`: executa o ESLint.
+- `pnpm typecheck`: valida os tipos TypeScript.
 
 ## Estrutura
 
 ```text
-apps/
-  api/       API, regras de negocio, Prisma e OpenAPI
-  web/       aplicacao React com Tailwind CSS
-packages/
-  shared/    contratos pequenos compartilhados
+src/                  aplicacao React
+docs/                 documentacao historica do monorepo
 ```
 
-## Pre-requisitos
-
-- Node.js 22 ou superior
-- pnpm 10
-- Docker com Docker Compose
-
-## Instalacao
-
-```bash
-pnpm install
-Copy-Item .env.example .env
-```
-
-Preencha todas as variaveis obrigatorias do `.env`, incluindo `TEST_DATABASE_URL`. Nao use as credenciais do exemplo em ambientes reais.
-
-## Banco de dados
-
-Inicie o PostgreSQL a partir da raiz:
-
-```bash
-docker compose up -d postgres
-```
-
-Gere o Prisma Client, execute as migrations e o seed:
-
-```bash
-pnpm db:generate
-pnpm db:migrate:deploy
-pnpm db:seed
-```
-
-O seed exige `SEED_ADMIN_NAME`, `SEED_ADMIN_EMAIL` e `SEED_ADMIN_PASSWORD`. Na primeira execucao ele cria o administrador e o catalogo de preco. Em reruns, contas existentes preservam senha, papel e estado ativo; configuracoes existentes preservam valor comercial, estado ativo e metadata operacional. O catalogo e validado antes de ser aplicado em uma transacao.
-
-O arquivo `apps/api/prisma.config.ts` carrega o `.env` da raiz para que os comandos Prisma possam ser executados pelos scripts do monorepo sem duplicar variaveis dentro de `apps/api`.
-
-## Desenvolvimento
-
-```bash
-pnpm dev
-```
-
-Aplicacoes isoladas:
-
-```bash
-pnpm dev:api
-pnpm dev:web
-```
-
-- API: `http://localhost:3001`
-- Web: `http://localhost:5173`
-- Healthcheck: `GET http://localhost:3001/health`
-
-O backend tambem pode ser iniciado com Docker:
-
-```bash
-docker compose up --build api
-```
-
-## Qualidade
-
-```bash
-pnpm test
-pnpm lint
-pnpm typecheck
-pnpm build
-```
-
-O build do frontend nao depende do banco de dados. A autenticacao usa Prisma isolado por mock e o fluxo de orcamentos usa `mjm_orcamentos_test`, separado do banco de desenvolvimento.
-
-Os testes de integracao exigem `TEST_DATABASE_URL` apontando exatamente para `mjm_orcamentos_test` em `localhost:5434`; a suite recusa URLs ausentes, de desenvolvimento ou fora desse padrao antes de limpar tabelas.
-
-## Autenticacao
-
-A API usa um JWT assinado, armazenado em cookie HttpOnly. O token contem somente o identificador do usuario e sua expiracao. Em cada rota privada, a API valida o token e consulta o usuario para confirmar que ele continua ativo.
-
-### Politica atual de acesso
-
-O produto opera atualmente como um workspace interno compartilhado: qualquer usuario autenticado pode consultar e operar os projetos, orcamentos e configuracoes de preco disponiveis no workspace. `responsibleUserId` registra o responsavel pelo projeto, mas ainda nao restringe acesso. Ownership e RBAC sao decisoes futuras e nao devem ser inferidos do comportamento atual.
-
-O logout remove o cookie no navegador. Como a autenticacao e stateless, nao existe revogacao individual antecipada: um token copiado permanece valido ate expirar. Por isso, a duracao e configuravel por `JWT_EXPIRES_IN_SECONDS`.
-
-Protecoes iniciais:
-
-- Argon2id para senhas;
-- cookie HttpOnly, SameSite e Secure configuravel;
-- CORS com origem explicita;
-- validacao de origem em operacoes mutaveis;
-- Helmet;
-- rate limit no login;
-- mensagens de credenciais uniformes;
-- respostas sem `passwordHash`.
-
-## Precificacao suportada
-
-Cada tipo possui schema, configuracoes e motor proprios. O backend carrega o tipo do projeto antes de validar o JSON do orcamento e o confirma novamente na transacao de persistencia, impedindo que campos ou precos de WEBSITE sejam usados em PLATAFORMA_WEB e vice-versa.
-
-### Limites tecnicos de Website
-
-Para manter quantidades e totais dentro de limites previsiveis, Website aceita no maximo 200 secoes, paginas, layouts unicos e itens de migracao; 100 formularios simples e 50 avancados. Esses limites evitam entradas que poderiam exceder os tipos `INTEGER` e `DECIMAL(14,2)` persistidos, sem alterar a tabela de precos ou a formula financeira.
-
-Em PLATAFORMA_WEB, o valor-base inclui a fundacao frontend/backend, persistencia, autenticacao por e-mail e senha, cinco telas, dois perfis e um idioma. O restante e detalhado por estrutura de contas, design, modulos funcionais, backoffice, dashboards, relatorios, autenticacao adicional, pagamentos, notificacoes, arquivos, auditoria, integracoes e migracao de dados. A data de lancamento nao pode estar antes do dia UTC atual. A implantacao da hospedagem e um item unico sem multiplicadores; hospedagem mensal e manutencao ficam separadas no total recorrente.
-
-### Sistema Interno e Plataforma Web
-
-`SISTEMA_INTERNO` representa uma aplicacao cujo valor principal e entregue aos colaboradores de uma organizacao para executar ou controlar processos internos. Exemplos incluem gestao operacional, CRM de uso interno, estoque, ativos, ordens de servico, solicitacoes, contratos, projetos, aprovacoes e gestao documental.
-
-`PLATAFORMA_WEB` representa um produto ou servico digital cujo valor principal e entregue a clientes, membros, fornecedores, parceiros ou outros usuarios externos. SaaS, multitenancy, marketplace, assinatura comercial, pagamentos do proprio produto e portais de autoatendimento externos pertencem a Plataforma Web. A tecnologia nao determina a classificacao: um Sistema Interno pode funcionar no navegador e uma Plataforma Web pode possuir backoffice interno.
-
-### Escopo e base de Sistema Interno
-
-Sistema Interno utiliza uma unica configuracao-base, `INTERNAL_SYSTEM_BASE`. Categorias como CRM, estoque ou ordens de servico nao selecionam bases diferentes; toda funcionalidade de negocio deve ser descrita por um modulo nomeado. Cada modulo e integracao produz um `BudgetItem` individual, com nome, descricao, complexidade, quantidade e preco congelados.
-
-A base cobre somente a fundacao tecnica:
-
-- autenticacao por e-mail e senha;
-- estrutura inicial da aplicacao;
-- dois perfis de acesso com permissoes padrao;
-- administracao basica de usuarios e parametros;
-- um dashboard simples;
-- notificacoes dentro do sistema.
-
-Essas franquias ficam em `PricingConfig.metadata`. O motor valida o metadata, calcula somente os excedentes e copia as franquias e quantidades informadas para o item-base. Assim, uma alteracao futura de franquias nao torna ambiguo um orcamento antigo.
-
-Modulos possuem complexidade `SIMPLE`, `STANDARD` ou `COMPLEX`, que escolhe seu preco unitario. O ajuste global `NONE`, `MODERATE` ou `HIGH` e reservado a fatores transversais nao capturados pelos modulos. A existencia de um modulo complexo, isoladamente, nao justifica aplicar complexidade global.
-
-O workflow global representa um processo transversal compartilhado por mais de um modulo. Um fluxo exclusivo de um modulo deve ser refletido na complexidade daquele modulo, evitando dupla cobranca. Workflow personalizado e fluxo documental podem coexistir quando forem entregas independentes.
-
-### Calculo de Sistema Interno
+Os contratos e schemas de dominio pertencem ao backend e sao consumidos pelo
+pacote `@mjm/contracts`. No desenvolvimento local, os repositorios devem ficar
+lado a lado:
 
 ```text
-servicos ajustados =
-  subtotal dos servicos ajustaveis
-  x multiplicador de complexidade
-  x multiplicador de urgencia
-  x (1 - desconto / 100)
-
-total final =
-  servicos ajustados
-  + implantacao de hospedagem
-
-total mensal =
-  hospedagem mensal
-  + manutencao mensal
+mjm-orcamento/
+mjm-orcamento-back/
 ```
 
-Base, modulos, perfis adicionais, permissoes, autenticacao adicional, workflow, documentos, dashboards adicionais, relatorios, notificacoes, integracoes e migracao sao ajustaveis. Implantacao de hospedagem e pontual e nao recebe complexidade, urgencia ou desconto. Hospedagem mensal e manutencao sao recorrentes e nao entram no total inicial.
+O vinculo local esta declarado como `link:../mjm-orcamento-back/packages/shared`.
+Para CI e releases, use uma tag imutavel do backend, por exemplo:
 
-Custos de consumo de e-mail, WhatsApp, SMS, SSO, nuvem ou outros fornecedores externos nao estao incluidos, salvo indicacao comercial expressa.
+```json
+"@mjm/contracts": "github:tuca-janahu/mjm-orcamento-back#v0.1.0&path:packages/shared"
+```
 
-## OpenAPI
-
-A especificacao das rotas implementadas esta em `apps/api/openapi.yaml`.
-
-## Principais decisoes
-
-- monorepo apenas com pnpm workspaces, sem Nx ou Turborepo;
-- frontend React com Tailwind CSS e backend Express separados;
-- apenas contratos estaveis podem entrar em `packages/shared`;
-- JWT sem tabela de sessao no MVP;
-- valores monetarios usam Decimal, com arredondamento `ROUND_HALF_UP` explicito no backend;
-- orcamentos sao chamados `Budget` e seus itens `BudgetItem`;
-- valores da API financeira sao serializados como strings decimais;
-- alteracoes de preco nao modificam itens ja persistidos;
-- complexidade, urgencia e desconto incidem somente sobre servicos, nao sobre infraestrutura ou recorrencias;
-- hospedagem, dominio e manutencao possuem escopos e cobrancas separados;
-- custos de terceiros por consumo, como gateways, e-mail, WhatsApp, SMS e nuvem, nao sao incluidos automaticamente;
-- o tipo do projeto determina o schema e o motor de calculo; ele nao e repetido no JSON do orcamento;
-- o tipo do projeto nao pode ser alterado depois que o primeiro orcamento for criado;
-- finalizar um rascunho preserva o calculo existente; somente uma acao explicita de recalculo aplica a tabela de precos atual;
-- a criacao iniciada pelo frontend usa `Idempotency-Key` como UUID do proprio orcamento, evitando uma nova versao quando a resposta se perde; repetir a finalizacao de um orcamento ja finalizado tambem e seguro;
-- apenas orcamentos em rascunho podem ser excluidos; versoes finalizadas permanecem no historico;
-- projetos so podem ser excluidos enquanto nao possuirem orcamentos;
-- o contrato de campos WEBSITE experimental anterior foi substituido diretamente e nao possui camada `V1`/`V2` de compatibilidade; as versoes de negociacao de um orcamento continuam sendo historicos independentes;
-- nenhuma credencial real e versionada.
+O frontend pode usar os schemas para feedback imediato, mas a API sempre executa
+a validacao autoritativa e decide as regras de negocio.
