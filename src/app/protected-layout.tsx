@@ -44,6 +44,7 @@ export function ProtectedLayout() {
         <nav className="hidden self-stretch items-stretch gap-7 text-xs text-zinc-500 lg:flex" aria-label="Navegação principal">
           <NavLink className={({ isActive }) => `flex items-center border-b-2 no-underline transition-colors ${isActive ? 'border-zinc-950 text-zinc-950' : 'border-transparent text-inherit hover:border-zinc-950 hover:text-zinc-950'}`} to="/" end>Visão geral</NavLink>
           <NavLink className={`flex items-center border-b-2 no-underline transition-colors ${projectsActive ? 'border-zinc-950 text-zinc-950' : 'border-transparent text-inherit hover:border-zinc-950 hover:text-zinc-950'}`} to="/projects">Projetos e orçamentos</NavLink>
+          {user.role === 'ADMIN' && <NavLink className={({ isActive }) => `flex items-center border-b-2 no-underline transition-colors ${isActive ? 'border-zinc-950 text-zinc-950' : 'border-transparent text-inherit hover:border-zinc-950 hover:text-zinc-950'}`} to="/administration">Administração</NavLink>}
         </nav>
         <div className="flex items-center justify-self-end gap-5">
           <div className="flex items-center gap-2 text-xs text-zinc-600">

@@ -47,9 +47,11 @@ function optionLabel(value: string): string {
 export function WebsiteBudgetScope({
   scope,
   notes,
+  mvpReductionPercentage,
 }: {
   scope: WebsiteBudgetInput;
   notes: string | null;
+  mvpReductionPercentage: string;
 }) {
   return (
     <BudgetScopeAside title="Website" notes={notes}>
@@ -121,6 +123,7 @@ export function WebsiteBudgetScope({
       </ScopeGroup>
 
       <ScopeGroup title="Ajustes comerciais">
+        <ScopeRow label="Projeto MVP">{scope.isMvp === true ? `Sim · redução de ${Number(mvpReductionPercentage).toFixed(2)}%` : "Não"}</ScopeRow>
         <ScopeRow label="Complexidade">
           {optionLabel(scope.complexityAdjustment)}
         </ScopeRow>

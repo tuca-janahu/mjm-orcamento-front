@@ -139,6 +139,7 @@ function budgetFor(testCase: BudgetFormCase, status: "RASCUNHO" | "FINALIZADO" =
     complexityMultiplier: "1.0000",
     urgencyMultiplier: "1.0000",
     discountPercentage: "0.00",
+    mvpReductionPercentage: "0.00",
     finalTotal: "100.00",
     monthlyRecurringTotal: "0.00",
     notes: "Premissa carregada",
@@ -215,12 +216,16 @@ describe("budget form lifecycle", () => {
 
     await findLoadedProject(testCase);
     await fillRequiredScopedItem(testCase, user);
+    await user.click(screen.getByRole("checkbox", { name: /Projeto MVP/ }));
     await user.click(screen.getByRole("button", { name: "Finalizar orçamento" }));
     const dialog = await screen.findByRole("dialog");
     await user.click(within(dialog).getByRole("button", { name: "Finalizar orçamento" }));
 
     await waitFor(() => expect(apiMocks.post).toHaveBeenCalledTimes(2));
     expect(apiMocks.post.mock.calls[0]?.[0]).toBe("/projects/project-1/budgets");
+    expect(apiMocks.post.mock.calls[0]?.[1]).toMatchObject({
+      inputData: { isMvp: true },
+    });
     expect(apiMocks.post.mock.calls[0]?.[2]).toEqual({
       headers: { "Idempotency-Key": "00000000-0000-4000-8000-000000000099" },
     });

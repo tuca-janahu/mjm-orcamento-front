@@ -56,9 +56,11 @@ function optionList(values: readonly string[]): string {
 export function WebPlatformBudgetScope({
   scope,
   notes,
+  mvpReductionPercentage,
 }: {
   scope: WebPlatformBudgetInput;
   notes: string | null;
+  mvpReductionPercentage: string;
 }) {
   return (
     <BudgetScopeAside title="Plataforma web" notes={notes}>
@@ -139,6 +141,7 @@ export function WebPlatformBudgetScope({
       </ScopeGroup>
 
       <ScopeGroup title="Operação e condições comerciais">
+        <ScopeRow label="Projeto MVP">{scope.isMvp === true ? `Sim · redução de ${Number(mvpReductionPercentage).toFixed(2)}%` : "Não"}</ScopeRow>
         <ScopeRow label="Hospedagem">
           {optionLabel(scope.hostingPlan)}
         </ScopeRow>

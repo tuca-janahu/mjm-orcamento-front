@@ -7,12 +7,15 @@ import { ProjectFormPage } from '../features/projects/project-form-page';
 import { ProjectDetailPage } from '../features/projects/project-detail-page';
 import { BudgetFormPage } from '../features/budgets/budget-form-page';
 import { BudgetDetailPage } from '../features/budgets/budget-detail-page';
+import { AdministrationPage } from '../features/admin/administration-page';
+import { ActivateAccountPage } from '../features/auth/activate-account-page';
 
 export function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/activate-account" element={<ActivateAccountPage />} />
         <Route element={<ProtectedLayout />}>
           <Route path="/" element={<AuthenticatedHomePage />} />
           <Route path="/projects" element={<ProjectListPage />} />
@@ -21,6 +24,7 @@ export function App() {
           <Route path="/projects/:projectId/budgets/new" element={<BudgetFormPage />} />
           <Route path="/budgets/:id" element={<BudgetDetailPage />} />
           <Route path="/budgets/:id/edit" element={<BudgetFormPage />} />
+          <Route path="/administration" element={<AdministrationPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

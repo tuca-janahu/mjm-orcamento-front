@@ -35,6 +35,7 @@ export const webPlatformDefaultValues: WebPlatformBudgetFormValues = {
     dataMigrationSourceCount: 0,
     hostingPlan: "CLIENT_MANAGED",
     maintenancePlan: "NONE",
+    isMvp: false,
     complexityAdjustment: "NONE",
     discountPercentage: 0,
   },

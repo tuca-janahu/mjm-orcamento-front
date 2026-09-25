@@ -288,7 +288,7 @@ export function ProjectListPage() {
         <ConfirmDialog
           open
           title="Excluir projeto?"
-          description={`A exclusão do projeto “${projectToDelete.name}” só será concluída se ele não possuir orçamentos vinculados. Esta ação não pode ser desfeita.`}
+          description={`O projeto “${projectToDelete.name}” e todos os seus ${projectToDelete._count.budgets} orçamento(s), incluindo itens e versões finalizadas, serão excluídos permanentemente. Esta ação não pode ser desfeita.`}
           confirmLabel="Excluir projeto"
           tone="danger"
           loading={deleting}

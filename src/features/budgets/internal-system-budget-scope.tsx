@@ -16,9 +16,11 @@ function optionList(values: readonly string[]): string {
 export function InternalSystemBudgetScope({
   scope,
   notes,
+  mvpReductionPercentage,
 }: {
   scope: InternalSystemBudgetInput;
   notes: string | null;
+  mvpReductionPercentage: string;
 }) {
   return (
     <BudgetScopeAside title="Sistema interno" notes={notes}>
@@ -90,6 +92,7 @@ export function InternalSystemBudgetScope({
       </ScopeGroup>
 
       <ScopeGroup title="Operação e condições comerciais">
+        <ScopeRow label="Projeto MVP">{scope.isMvp === true ? `Sim · redução de ${Number(mvpReductionPercentage).toFixed(2)}%` : "Não"}</ScopeRow>
         <ScopeRow label="Hospedagem">
           {internalSystemOptionLabel(scope.hostingPlan)}
         </ScopeRow>

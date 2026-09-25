@@ -6,6 +6,7 @@ import { useNavigate } from "react-router";
 import { BrandMark } from "../../components/brand-mark";
 import { api } from "../../lib/api";
 import { apiErrorMessage } from "../../lib/api-error";
+import { PasswordInput } from "../../components/password-input";
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -85,9 +86,8 @@ export function LoginPage() {
 
             <label className="grid gap-2 text-[0.6875rem] font-bold tracking-[0.12em] text-zinc-600 uppercase">
               <span>Senha</span>
-              <input
+              <PasswordInput
                 className="w-full p-2 border-0 border-b border-zinc-300 bg-transparent py-3 text-[0.9375rem] font-normal tracking-normal text-zinc-950 normal-case outline-none transition-colors placeholder:text-zinc-400 focus:border-sky-500"
-                type="password"
                 autoComplete="current-password"
                 placeholder="Sua senha"
                 {...register("password")}

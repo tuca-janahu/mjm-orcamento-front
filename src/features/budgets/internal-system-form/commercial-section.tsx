@@ -43,6 +43,18 @@ export function CommercialSection() {
         description="Defina hospedagem, manutenção e ajustes excepcionais aplicados ao orçamento."
       />
       <div className={ui.formGrid}>
+        <label className={`${ui.checkOption} border border-zinc-200 sm:col-span-2`}>
+          <input
+            className="peer absolute h-px w-px opacity-0"
+            type="checkbox"
+            {...register("inputData.isMvp")}
+          />
+          <span className={ui.checkMark} aria-hidden="true" />
+          <span className="grid gap-1">
+            <strong className="text-xs text-zinc-950 normal-case">Projeto MVP</strong>
+            <small className="text-[0.6875rem] leading-relaxed font-normal tracking-normal text-zinc-500 normal-case">Aplica aos serviços ajustáveis a redução configurada na Administração. Custos fixos e mensalidades permanecem integrais.</small>
+          </span>
+        </label>
         <label className={ui.field}>
           <span>Hospedagem</span>
           <select className={ui.input} {...register("inputData.hostingPlan")}>

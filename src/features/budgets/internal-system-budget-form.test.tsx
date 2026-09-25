@@ -51,6 +51,7 @@ const validInput: InternalSystemBudgetInput = {
   dataMigrationSourceCount: 0,
   hostingPlan: "CLIENT_MANAGED",
   maintenancePlan: "NONE",
+  isMvp: false,
   complexityAdjustment: "NONE",
   discountPercentage: 0,
 };
@@ -68,6 +69,7 @@ function budgetDto(
     complexityMultiplier: "1.0000",
     urgencyMultiplier: "1.0000",
     discountPercentage: "0.00",
+    mvpReductionPercentage: "0.00",
     finalTotal: "7500.00",
     monthlyRecurringTotal: "0.00",
     notes: "Premissa carregada",

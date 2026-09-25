@@ -32,6 +32,7 @@ const scope: InternalSystemBudgetInput = {
   dataMigrationDescription: "Banco legado e planilha histórica",
   hostingPlan: "MJM_MANAGED",
   maintenancePlan: "STANDARD",
+  isMvp: true,
   complexityAdjustment: "MODERATE",
   complexityReason: "Regras compartilhadas críticas",
   discountPercentage: 10,
@@ -44,6 +45,7 @@ describe("InternalSystemBudgetScope", () => {
       <InternalSystemBudgetScope
         scope={scope}
         notes="Premissa geral do orçamento"
+        mvpReductionPercentage="50.00"
       />,
     );
 
@@ -55,6 +57,8 @@ describe("InternalSystemBudgetScope", () => {
       "ERP corporativo · Complexa · Sincronização do estoque",
     );
     expect(screen.getByText("Banco legado e planilha histórica")).toBeInTheDocument();
+    expect(screen.getByText("Projeto MVP")).toBeInTheDocument();
+    expect(screen.getByText("Sim · redução de 50.00%")).toBeInTheDocument();
     expect(screen.getByText(/SSO corporativo/)).toBeInTheDocument();
     expect(screen.getByText("Premissa geral do orçamento")).toBeInTheDocument();
     expect(

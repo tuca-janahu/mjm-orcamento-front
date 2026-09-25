@@ -89,7 +89,7 @@ function FinancialSummary({
             {formatCurrency(budget.finalTotal)}
           </strong>
           <small className="text-[0.6875rem] text-zinc-500">
-            Desconto de {Number(budget.discountPercentage).toFixed(2)}%
+            MVP {Number(budget.mvpReductionPercentage).toFixed(2)}% · Desconto {Number(budget.discountPercentage).toFixed(2)}%
           </small>
         </div>
         <div className="grid gap-2 p-4">

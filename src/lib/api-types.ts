@@ -7,6 +7,7 @@ import type {
   WebPlatformBudgetInput,
   WebsiteBudgetInput
 } from '@mjm/contracts';
+import type { UserInvitationStatus } from '@mjm/contracts';
 
 export type JsonPrimitive = string | number | boolean | null;
 export type JsonValue = JsonPrimitive | JsonValue[] | { [key: string]: JsonValue };
@@ -55,6 +56,7 @@ export interface BudgetDto<TInputData extends BudgetInputData = BudgetInputData>
   complexityMultiplier: string;
   urgencyMultiplier: string;
   discountPercentage: string;
+  mvpReductionPercentage: string;
   finalTotal: string;
   monthlyRecurringTotal: string;
   notes: string | null;
@@ -67,4 +69,37 @@ export interface BudgetDto<TInputData extends BudgetInputData = BudgetInputData>
 
 export interface AuthenticatedOutletContext {
   user: AuthUser;
+}
+
+export interface InternalUserDto extends AuthUser {
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UserInvitationDto {
+  id: string;
+  name: string;
+  email: string;
+  role: 'ADMIN' | 'USER';
+  status: UserInvitationStatus;
+  expiresAt: string;
+  deliveryVersion: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type PricingConfigType = 'FIXED_VALUE' | 'UNIT_VALUE' | 'MULTIPLIER' | 'PERCENTAGE';
+
+export interface PricingConfigDto {
+  id: string;
+  code: string;
+  name: string;
+  applicationType: ApplicationType;
+  category: string;
+  configType: PricingConfigType;
+  value: string;
+  active: boolean;
+  metadata: JsonObject | null;
+  createdAt: string;
+  updatedAt: string;
 }

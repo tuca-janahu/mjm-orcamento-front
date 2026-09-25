@@ -17,7 +17,7 @@ function ScopeDetails({ budget }: { budget: BudgetDto }) {
     "websiteCategory" in budget.inputData
   ) {
     return (
-      <WebsiteBudgetScope scope={budget.inputData} notes={budget.notes} />
+      <WebsiteBudgetScope scope={budget.inputData} notes={budget.notes} mvpReductionPercentage={budget.mvpReductionPercentage} />
     );
   }
 
@@ -26,7 +26,7 @@ function ScopeDetails({ budget }: { budget: BudgetDto }) {
     "platformCategory" in budget.inputData
   ) {
     return (
-      <WebPlatformBudgetScope scope={budget.inputData} notes={budget.notes} />
+      <WebPlatformBudgetScope scope={budget.inputData} notes={budget.notes} mvpReductionPercentage={budget.mvpReductionPercentage} />
     );
   }
 
@@ -35,7 +35,7 @@ function ScopeDetails({ budget }: { budget: BudgetDto }) {
     "modules" in budget.inputData
   ) {
     return (
-      <InternalSystemBudgetScope scope={budget.inputData} notes={budget.notes} />
+      <InternalSystemBudgetScope scope={budget.inputData} notes={budget.notes} mvpReductionPercentage={budget.mvpReductionPercentage} />
     );
   }
 
@@ -213,6 +213,12 @@ export function BudgetDetailPage() {
             </dt>
             <dd className="m-0 text-xs font-semibold">
               {Number(budget.urgencyMultiplier).toFixed(2)}×
+            </dd>
+          </div>
+          <div className="flex justify-between gap-5">
+            <dt className="text-[0.6875rem] text-zinc-500">Redução MVP</dt>
+            <dd className="m-0 text-xs font-semibold">
+              {Number(budget.mvpReductionPercentage).toFixed(2)}%
             </dd>
           </div>
           <div className="flex justify-between gap-5">
