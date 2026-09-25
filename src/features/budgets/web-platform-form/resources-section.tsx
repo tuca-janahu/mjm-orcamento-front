@@ -4,7 +4,7 @@ import {
   webPlatformFileHandlingLevels,
   webPlatformNotificationChannels,
   webPlatformPaymentFeatures,
-} from "@mjm/contracts";
+} from "../../../lib/api-options";
 import { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import { ui } from "../../../lib/ui";

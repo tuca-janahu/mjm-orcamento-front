@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import type { InternalSystemBudgetInput } from "@mjm/contracts";
+import type { InternalSystemBudgetInput } from "../../lib/api-types";
 import { describe, expect, it } from "vitest";
 import { InternalSystemBudgetScope } from "./internal-system-budget-scope";
 

@@ -1,16 +1,21 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { applicationTypes, createProjectInputSchema } from "@mjm/contracts";
+import { applicationTypes } from "../../lib/api-options";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { api } from "../../lib/api";
 import { apiErrorMessage } from "../../lib/api-error";
-import type { ProjectSummary } from "../../lib/api-types";
+import type { ApplicationType, ProjectStatus, ProjectSummary } from "../../lib/api-types";
 import { labelFromEnum } from "../../lib/format";
-import type { z } from "zod";
 import { ui } from "../../lib/ui";
 
-type ProjectFormValues = z.input<typeof createProjectInputSchema>;
+interface ProjectFormValues {
+  name: string;
+  clientName?: string;
+  description?: string;
+  applicationType: ApplicationType;
+  status: ProjectStatus;
+  notes?: string;
+}
 
 export function ProjectFormPage() {
   const navigate = useNavigate();
@@ -20,7 +25,6 @@ export function ProjectFormPage() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<ProjectFormValues>({
-    resolver: zodResolver(createProjectInputSchema),
     defaultValues: { applicationType: "WEBSITE", status: "PROSPECCAO" },
   });
 
@@ -70,7 +74,7 @@ export function ProjectFormPage() {
           <div className={ui.formGrid}>
             <label className={ui.fieldWide}>
               <span>Nome do projeto</span>
-              <input className={ui.input} {...register("name")} />
+              <input className={ui.input} {...register("name", { required: "Informe o nome do projeto" })} />
               {errors.name && (
                 <small className={ui.fieldError}>{errors.name.message}</small>
               )}

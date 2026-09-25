@@ -1,15 +1,7 @@
-import { webPlatformBudgetInputSchema } from "@mjm/contracts";
-import { z } from "zod";
+import type { BudgetFormValues, WebPlatformBudgetInput } from "../../../lib/api-types";
 import { labelFromEnum } from "../../../lib/format";
 
-export const webPlatformBudgetFormSchema = z.object({
-  inputData: webPlatformBudgetInputSchema,
-  notes: z.string().trim().max(4_000).optional(),
-});
-
-export type WebPlatformBudgetFormValues = z.infer<
-  typeof webPlatformBudgetFormSchema
->;
+export type WebPlatformBudgetFormValues = BudgetFormValues<WebPlatformBudgetInput>;
 
 export const webPlatformDefaultValues: WebPlatformBudgetFormValues = {
   inputData: {

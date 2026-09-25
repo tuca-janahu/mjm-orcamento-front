@@ -1,4 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   additionalWebsiteModules,
   complexityAdjustments,
@@ -10,11 +9,9 @@ import {
   integrationComplexities,
   maintenancePlans,
   seoLevels,
-  websiteBudgetInputSchema,
   websiteCategories,
   websiteTechnicalLimits,
-  type WebsiteBudgetInput,
-} from "@mjm/contracts";
+} from "../../lib/api-options";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -23,17 +20,10 @@ import { ConfirmDialog } from "../../components/confirm-dialog";
 import { FieldError } from "./budget-form-ui";
 import { api } from "../../lib/api";
 import { apiErrorMessage as budgetErrorMessage } from "../../lib/api-error";
-import type { BudgetDto, ProjectSummary } from "../../lib/api-types";
+import type { BudgetDto, BudgetFormValues, ProjectSummary, WebsiteBudgetInput } from "../../lib/api-types";
 import { labelFromEnum } from "../../lib/format";
 import { ui } from "../../lib/ui";
-import { z } from "zod";
-
-const websiteBudgetFormSchema = z.object({
-  inputData: websiteBudgetInputSchema,
-  notes: z.string().trim().max(4_000).optional(),
-});
-
-type WebsiteBudgetFormValues = z.infer<typeof websiteBudgetFormSchema>;
+type WebsiteBudgetFormValues = BudgetFormValues<WebsiteBudgetInput>;
 
 const defaultValues: WebsiteBudgetFormValues = {
   inputData: {
@@ -122,7 +112,6 @@ export function WebsiteBudgetForm() {
     watch,
     formState: { errors, isSubmitting },
   } = useForm<WebsiteBudgetFormValues>({
-    resolver: zodResolver(websiteBudgetFormSchema),
     defaultValues,
   });
   const {
@@ -594,7 +583,9 @@ export function WebsiteBudgetForm() {
                     <input
                       className={ui.input}
                       placeholder="Ex.: HubSpot"
-                      {...register(`inputData.integrations.${index}.name`)}
+                      {...register(`inputData.integrations.${index}.name`, {
+                        required: "Informe o nome da integração",
+                      })}
                     />
                     <FieldError
                       message={

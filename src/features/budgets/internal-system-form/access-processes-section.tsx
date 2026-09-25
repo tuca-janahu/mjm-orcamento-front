@@ -3,7 +3,7 @@ import {
   internalSystemDocumentManagementLevels,
   internalSystemPermissionModels,
   internalSystemWorkflowLevels,
-} from "@mjm/contracts";
+} from "../../../lib/api-options";
 import { useFormContext } from "react-hook-form";
 import { ui } from "../../../lib/ui";
 import type { InternalSystemBudgetFormValues } from "./config";

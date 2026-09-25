@@ -1,4 +1,4 @@
-import type { InternalSystemBudgetInput } from "@mjm/contracts";
+import type { InternalSystemBudgetInput } from "../../lib/api-types";
 import {
   BudgetScopeAside,
   formatTargetDate,

@@ -1,19 +1,16 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import type { InternalSystemBudgetInput } from "@mjm/contracts";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { FormProvider, type Resolver, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router";
 import { ConfirmDialog } from "../../components/confirm-dialog";
 import { api } from "../../lib/api";
 import { apiErrorMessage as budgetErrorMessage } from "../../lib/api-error";
-import type { BudgetDto, ProjectSummary } from "../../lib/api-types";
+import type { BudgetDto, InternalSystemBudgetInput, ProjectSummary } from "../../lib/api-types";
 import { formatCurrency } from "../../lib/format";
 import { ui } from "../../lib/ui";
 import { AccessProcessesSection } from "./internal-system-form/access-processes-section";
 import { CommercialSection } from "./internal-system-form/commercial-section";
 import {
-  internalSystemBudgetFormSchema,
   internalSystemDefaultValues,
   type InternalSystemBudgetFormValues,
 } from "./internal-system-form/config";
@@ -169,9 +166,6 @@ export function InternalSystemBudgetForm() {
   >(null);
   const [creationIdempotencyKey] = useState(() => crypto.randomUUID());
   const methods = useForm<InternalSystemBudgetFormValues>({
-    resolver: zodResolver(
-      internalSystemBudgetFormSchema,
-    ) as Resolver<InternalSystemBudgetFormValues>,
     defaultValues: internalSystemDefaultValues,
   });
   const {

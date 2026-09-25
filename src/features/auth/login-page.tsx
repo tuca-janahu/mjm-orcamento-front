@@ -1,5 +1,4 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { loginInputSchema, type LoginInput } from "@mjm/contracts";
+import type { LoginInput } from "../../lib/api-types";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
@@ -15,7 +14,7 @@ export function LoginPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginInput>({ resolver: zodResolver(loginInputSchema) });
+  } = useForm<LoginInput>();
 
   const submit = handleSubmit(async (values) => {
     setServerError(null);
@@ -75,7 +74,7 @@ export function LoginPage() {
                 type="email"
                 autoComplete="email"
                 placeholder="voce@empresa.com.br"
-                {...register("email")}
+                {...register("email", { required: "Informe o e-mail" })}
               />
               {errors.email && (
                 <span className="text-[0.6875rem] font-medium tracking-normal text-red-600 normal-case">
@@ -90,7 +89,7 @@ export function LoginPage() {
                 className="w-full p-2 border-0 border-b border-zinc-300 bg-transparent py-3 text-[0.9375rem] font-normal tracking-normal text-zinc-950 normal-case outline-none transition-colors placeholder:text-zinc-400 focus:border-sky-500"
                 autoComplete="current-password"
                 placeholder="Sua senha"
-                {...register("password")}
+                {...register("password", { required: "Informe a senha" })}
               />
               {errors.password && (
                 <span className="text-[0.6875rem] font-medium tracking-normal text-red-600 normal-case">

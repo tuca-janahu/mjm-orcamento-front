@@ -8,22 +8,18 @@
     "node": ">=22"
   },
   "scripts": {
-    "contracts:build": "pnpm --dir ../mjm-orcamento-back/packages/shared build",
-    "dev": "pnpm run contracts:build && vite",
-    "build": "pnpm run contracts:build && tsc -b && vite build",
+    "dev": "vite",
+    "build": "tsc -b && vite build",
     "lint": "eslint src",
-    "test": "pnpm run contracts:build && vitest run",
-    "typecheck": "pnpm run contracts:build && tsc -b --noEmit"
+    "test": "vitest run",
+    "typecheck": "tsc -b --noEmit"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.1.1",
-    "@mjm/contracts": "link:../mjm-orcamento-back/packages/shared",
     "axios": "^1.10.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.60.0",
-    "react-router": "^7.7.0",
-    "zod": "^3.25.76"
+    "react-router": "^7.7.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",

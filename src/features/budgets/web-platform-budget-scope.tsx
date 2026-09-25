@@ -1,4 +1,4 @@
-import type { WebPlatformBudgetInput } from "@mjm/contracts";
+import type { WebPlatformBudgetInput } from "../../lib/api-types";
 import { labelFromEnum } from "../../lib/format";
 import {
   BudgetScopeAside,

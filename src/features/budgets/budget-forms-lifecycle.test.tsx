@@ -3,7 +3,7 @@ import type {
   InternalSystemBudgetInput,
   WebPlatformBudgetInput,
   WebsiteBudgetInput,
-} from "@mjm/contracts";
+} from "../../lib/api-types";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { ComponentType } from "react";

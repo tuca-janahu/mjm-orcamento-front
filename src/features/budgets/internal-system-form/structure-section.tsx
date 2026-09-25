@@ -1,4 +1,4 @@
-import { integrationComplexities } from "@mjm/contracts";
+import { integrationComplexities } from "../../../lib/api-options";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { ui } from "../../../lib/ui";
 import type { InternalSystemBudgetFormValues } from "./config";
@@ -64,7 +64,9 @@ export function StructureSection() {
                   className={ui.input}
                   maxLength={120}
                   placeholder="Ex.: Controle de estoque"
-                  {...register(`inputData.modules.${index}.name`)}
+                  {...register(`inputData.modules.${index}.name`, {
+                    required: "Informe o nome do módulo",
+                  })}
                 />
                 <FieldError
                   message={errors.inputData?.modules?.[index]?.name?.message}

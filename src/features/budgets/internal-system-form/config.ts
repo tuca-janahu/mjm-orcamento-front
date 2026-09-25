@@ -1,17 +1,7 @@
-import { internalSystemBudgetInputSchema } from "@mjm/contracts";
-import { z } from "zod";
+import type { BudgetFormValues, InternalSystemBudgetInput } from "../../../lib/api-types";
 import { labelFromEnum } from "../../../lib/format";
 
-export const internalSystemBudgetFormSchema = z
-  .object({
-    inputData: internalSystemBudgetInputSchema,
-    notes: z.string().trim().max(4_000).optional(),
-  })
-  .strict();
-
-export type InternalSystemBudgetFormValues = z.infer<
-  typeof internalSystemBudgetFormSchema
->;
+export type InternalSystemBudgetFormValues = BudgetFormValues<InternalSystemBudgetInput>;
 
 export const internalSystemDefaultValues: InternalSystemBudgetFormValues = {
   inputData: {

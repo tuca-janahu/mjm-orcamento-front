@@ -1,4 +1,5 @@
-import { projectStatuses, type ProjectStatus } from "@mjm/contracts";
+import { projectStatuses } from "../../lib/api-options";
+import type { ProjectStatus } from "../../lib/api-types";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { ConfirmDialog } from "../../components/confirm-dialog";

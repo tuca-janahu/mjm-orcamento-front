@@ -1,4 +1,4 @@
-import type { ApplicationType } from "@mjm/contracts";
+import type { ApplicationType } from "../../lib/api-types";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { api } from "../../lib/api";

@@ -1,7 +1,7 @@
 import {
   integrationComplexities,
   webPlatformDataMigrationLevels,
-} from "@mjm/contracts";
+} from "../../../lib/api-options";
 import { useEffect } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { ui } from "../../../lib/ui";
@@ -81,7 +81,9 @@ export function IntegrationsSection() {
                 <input
                   className={ui.input}
                   placeholder="Ex.: ERP ou gateway de pagamento"
-                  {...register(`inputData.integrations.${index}.name`)}
+                  {...register(`inputData.integrations.${index}.name`, {
+                    required: "Informe o nome da integração",
+                  })}
                 />
                 <FieldError
                   message={

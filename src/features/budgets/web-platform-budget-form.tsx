@@ -1,5 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import type { WebPlatformBudgetInput } from "@mjm/contracts";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -7,11 +5,10 @@ import { Link, useNavigate, useParams } from "react-router";
 import { ConfirmDialog } from "../../components/confirm-dialog";
 import { api } from "../../lib/api";
 import { apiErrorMessage as budgetErrorMessage } from "../../lib/api-error";
-import type { BudgetDto, ProjectSummary } from "../../lib/api-types";
+import type { BudgetDto, ProjectSummary, WebPlatformBudgetInput } from "../../lib/api-types";
 import { ui } from "../../lib/ui";
 import { CommercialSection } from "./web-platform-form/commercial-section";
 import {
-  webPlatformBudgetFormSchema,
   webPlatformDefaultValues,
   type WebPlatformBudgetFormValues,
 } from "./web-platform-form/config";
@@ -36,7 +33,6 @@ export function WebPlatformBudgetForm() {
   >(null);
   const [creationIdempotencyKey] = useState(() => crypto.randomUUID());
   const methods = useForm<WebPlatformBudgetFormValues>({
-    resolver: zodResolver(webPlatformBudgetFormSchema),
     defaultValues: webPlatformDefaultValues,
   });
   const {

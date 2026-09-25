@@ -1,4 +1,4 @@
-import type { AuthUser } from '@mjm/contracts';
+import type { AuthUser } from '../lib/api-types';
 import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router';
 import { BrandMark } from '../components/brand-mark';

@@ -1,6 +1,6 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { InternalSystemBudgetInput } from "@mjm/contracts";
+import type { InternalSystemBudgetInput } from "../../lib/api-types";
 import { MemoryRouter, Route, Routes } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { BudgetDto, ProjectSummary } from "../../lib/api-types";
@@ -159,11 +159,19 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function submittedInputData(): Record<string, unknown> {
-  const payload = apiMocks.post.mock.calls[0]?.[1];
+  const payload = apiMocks.post.mock.calls.at(-1)?.[1];
   if (!isRecord(payload) || !isRecord(payload.inputData)) {
     throw new Error("O payload submetido nao possui inputData");
   }
   return payload.inputData;
+}
+
+function apiValidationError(message: string) {
+  return {
+    isAxiosError: true,
+    response: { data: { error: { message } } },
+    toJSON: () => ({}),
+  };
 }
 
 beforeEach(() => {
@@ -204,9 +212,13 @@ describe("InternalSystemBudgetForm", () => {
     expect(addIntegration).toBeEnabled();
   });
 
-  it("shows normalized duplicate errors next to modules and integrations", async () => {
+  it("shows the API validation error for duplicate modules and integrations", async () => {
     const user = userEvent.setup();
     renderNewForm();
+
+    apiMocks.post.mockRejectedValueOnce(
+      apiValidationError("Os nomes dos módulos e integrações devem ser únicos"),
+    );
 
     const firstModule = screen.getByLabelText("Nome do módulo");
     await user.type(firstModule, " Gestão   de Estoque ");
@@ -233,19 +245,20 @@ describe("InternalSystemBudgetForm", () => {
 
     await user.click(screen.getByRole("button", { name: "Salvar rascunho" }));
 
-    expect(
-      await screen.findByText("Os nomes dos módulos não podem se repetir"),
-    ).toBeInTheDocument();
-    expect(
-      await screen.findByText("Os nomes das integrações não podem se repetir"),
-    ).toBeInTheDocument();
-    expect(apiMocks.post).not.toHaveBeenCalled();
+    expect(await screen.findByText(
+      "Os nomes dos módulos e integrações devem ser únicos",
+    )).toBeInTheDocument();
+    expect(apiMocks.post).toHaveBeenCalledTimes(1);
   });
 
-  it("requires migration data and clears stale source fields when migration is disabled", async () => {
+  it("shows API validation and clears stale migration fields when migration is disabled", async () => {
     const user = userEvent.setup();
     renderNewForm();
     await fillRequiredModule(user);
+
+    apiMocks.post.mockRejectedValueOnce(
+      apiValidationError("Informe os dados necessários para a migração"),
+    );
 
     await user.selectOptions(
       screen.getByLabelText("Migração de dados"),
@@ -255,12 +268,9 @@ describe("InternalSystemBudgetForm", () => {
     expect(screen.getByLabelText("Descrição das fontes")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Salvar rascunho" }));
-    expect(
-      await screen.findByText("Informe ao menos uma fonte para migração de dados"),
-    ).toBeInTheDocument();
-    expect(
-      await screen.findByText("Descreva as fontes da migração de dados"),
-    ).toBeInTheDocument();
+    expect(await screen.findByText(
+      "Informe os dados necessários para a migração",
+    )).toBeInTheDocument();
 
     await user.clear(screen.getByLabelText("Fontes de dados"));
     await user.type(screen.getByLabelText("Fontes de dados"), "2");
@@ -276,7 +286,7 @@ describe("InternalSystemBudgetForm", () => {
     ).not.toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Salvar rascunho" }));
-    await waitFor(() => expect(apiMocks.post).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(apiMocks.post).toHaveBeenCalledTimes(2));
     const inputData = submittedInputData();
     expect(inputData.dataMigrationSourceCount).toBe(0);
     expect(inputData.dataMigrationDescription).toBeUndefined();
@@ -285,10 +295,14 @@ describe("InternalSystemBudgetForm", () => {
     );
   });
 
-  it("requires conditional reasons, clears obsolete values, and warns about a one-module workflow", async () => {
+  it("shows API validation, clears obsolete reasons, and warns about a one-module workflow", async () => {
     const user = userEvent.setup();
     renderNewForm();
     await fillRequiredModule(user);
+
+    apiMocks.post.mockRejectedValueOnce(
+      apiValidationError("Justifique os ajustes comerciais"),
+    );
 
     await user.selectOptions(screen.getByLabelText("Workflow global"), "SIMPLE");
     expect(
@@ -320,12 +334,9 @@ describe("InternalSystemBudgetForm", () => {
       "Justificativa do desconto",
     );
     await user.click(screen.getByRole("button", { name: "Salvar rascunho" }));
-    expect(
-      await screen.findByText("Justifique o ajuste de complexidade"),
-    ).toBeInTheDocument();
-    expect(
-      await screen.findByText("Justifique o desconto aplicado"),
-    ).toBeInTheDocument();
+    expect(await screen.findByText(
+      "Justifique os ajustes comerciais",
+    )).toBeInTheDocument();
 
     await user.type(complexityReason, "Dependências críticas entre módulos");
     await user.type(discountReason, "Condição comercial aprovada");
@@ -344,7 +355,7 @@ describe("InternalSystemBudgetForm", () => {
     ).not.toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Salvar rascunho" }));
-    await waitFor(() => expect(apiMocks.post).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(apiMocks.post).toHaveBeenCalledTimes(2));
     const inputData = submittedInputData();
     expect(inputData.complexityReason).toBeUndefined();
     expect(inputData.discountReason).toBeUndefined();

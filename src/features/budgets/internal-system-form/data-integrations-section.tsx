@@ -2,7 +2,7 @@ import {
   integrationComplexities,
   internalSystemDataMigrationLevels,
   internalSystemNotificationChannels,
-} from "@mjm/contracts";
+} from "../../../lib/api-options";
 import { useEffect } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { ui } from "../../../lib/ui";
@@ -172,7 +172,9 @@ export function DataIntegrationsSection() {
                   className={ui.input}
                   maxLength={120}
                   placeholder="Ex.: ERP corporativo"
-                  {...register(`inputData.integrations.${index}.name`)}
+                  {...register(`inputData.integrations.${index}.name`, {
+                    required: "Informe o nome da integração",
+                  })}
                 />
                 <FieldError
                   message={

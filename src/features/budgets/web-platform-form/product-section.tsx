@@ -2,7 +2,7 @@ import {
   integrationComplexities,
   webPlatformBackofficeLevels,
   webPlatformDesignApproaches,
-} from "@mjm/contracts";
+} from "../../../lib/api-options";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { ui } from "../../../lib/ui";
 import type { WebPlatformBudgetFormValues } from "./config";
@@ -122,7 +122,9 @@ export function ProductSection() {
                 <input
                   className={ui.input}
                   placeholder="Ex.: Gestão de assinaturas"
-                  {...register(`inputData.functionalModules.${index}.name`)}
+                  {...register(`inputData.functionalModules.${index}.name`, {
+                    required: "Informe o nome do módulo",
+                  })}
                 />
                 <FieldError
                   message={
