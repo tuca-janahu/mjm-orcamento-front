@@ -6,6 +6,7 @@ import { BrandMark } from "../../components/brand-mark";
 import { api } from "../../lib/api";
 import { apiErrorMessage } from "../../lib/api-error";
 import { PasswordInput } from "../../components/password-input";
+import { UserKey } from "lucide-react";
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -114,11 +115,11 @@ export function LoginPage() {
             disabled={isSubmitting}
           >
             <span>{isSubmitting ? "Entrando..." : "Entrar na plataforma"}</span>
-            <span aria-hidden="true">↗</span>
+            <span aria-hidden="true"><UserKey/></span>
           </button>
 
           <p className="-mt-3.5 text-center text-[0.5625rem] tracking-[0.1em] text-zinc-400 uppercase">
-            Ambiente interno · Cookie seguro
+            Ambiente interno · Cookie Safe
           </p>
         </form>
       </section>

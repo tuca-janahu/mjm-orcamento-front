@@ -11,8 +11,21 @@ function renderPage(token = 'a'.repeat(43)) {
   return render(<MemoryRouter initialEntries={[`/activate-account?token=${token}`]}><Routes><Route path="/activate-account" element={<ActivateAccountPage />} /><Route path="/" element={<div>Conta ativada</div>} /></Routes></MemoryRouter>);
 }
 
+function renderPreview(state: 'ready' | 'invalid' | 'expired' | 'used') {
+  return render(<MemoryRouter initialEntries={[`/activate-account?preview=${state}`]}><Routes><Route path="/activate-account" element={<ActivateAccountPage />} /></Routes></MemoryRouter>);
+}
+
 describe('ActivateAccountPage', () => {
-  beforeEach(() => { apiMocks.post.mockResolvedValue({ data: { valid: true } }); });
+  beforeEach(() => {
+    vi.clearAllMocks();
+    apiMocks.post.mockResolvedValue({ data: { valid: true } });
+  });
+
+  it('permite visualizar a tela pronta em desenvolvimento sem chamar a API', async () => {
+    renderPreview('ready');
+    expect(await screen.findByText('Defina sua senha')).toBeInTheDocument();
+    expect(apiMocks.post).not.toHaveBeenCalled();
+  });
 
   it('valida o link, confere as senhas e ativa a conta', async () => {
     renderPage();
