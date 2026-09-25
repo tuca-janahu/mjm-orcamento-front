@@ -54,6 +54,10 @@ const accentedWords: Record<string, string> = {
   unico: "único",
   unicos: "únicos",
   urgencia: "urgência",
+  prospeccao: "prospecção",
+  execucao: "execução",
+  preparacao: "preparação",
+  concluido: "concluído",
 };
 
 function accentedLabel(value: string): string {
